@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ReservationFileRepository implements ReservationRepository {
     private static final String HEADER = "id,start_date,end_date,guest_id,total";
-    private String directoryPath;
+    private final String directoryPath;
     private GuestRepository guestRepository;
 
     public ReservationFileRepository(String directoryPath) {
@@ -24,7 +24,12 @@ public class ReservationFileRepository implements ReservationRepository {
         this.guestRepository = guestRepository;
     }
 
+    @Override
     public List<Reservation> findByHost(Host host) throws DataException {
+        if (host == null) {
+            throw new DataException("Host cannot be null");
+        }
+
         ArrayList<Reservation> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(getFilePath(host.getId())))) {
             reader.readLine();
@@ -78,7 +83,12 @@ public class ReservationFileRepository implements ReservationRepository {
     }
 
     private String serialize(Reservation reservation) {
-        return String.format("%s,%s,%s,%s,%s", reservation.getId(), reservation.getStart(), reservation.getEnd(), reservation.getGuest().getId(), reservation.getTotal());
+        return String.format("%s,%s,%s,%s,%s",
+                reservation.getId(),
+                reservation.getStart(),
+                reservation.getEnd(),
+                reservation.getGuest().getId(),
+                reservation.getTotal());
     }
 
     private Reservation deserialize(String[] fields, Host host) throws DataException {
@@ -100,9 +110,8 @@ public class ReservationFileRepository implements ReservationRepository {
     private void writeAll(List<Reservation> reservations, Host host) throws DataException {
         try (PrintWriter writer = new PrintWriter(getFilePath(host.getId()))) {
             writer.println(HEADER);
-
-            for (Reservation item : reservations) {
-                writer.println(serialize(item));
+            for (Reservation reservation : reservations) {
+                writer.println(serialize(reservation));
             }
         } catch (FileNotFoundException ex) {
             throw new DataException(ex);

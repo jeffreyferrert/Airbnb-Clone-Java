@@ -1,6 +1,5 @@
 package learn.mastery.data;
 
-import learn.mastery.models.Guest;
 import learn.mastery.models.Host;
 
 import java.io.BufferedReader;
@@ -10,13 +9,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class HostFileRepository implements HostRepository {
-    private String filePath;
+    private final String filePath;
 
     public HostFileRepository(String filePath) {
         this.filePath = filePath;
     }
 
-    public Host getHostById(String hostId) {
+    @Override
+    public ArrayList<Host> findAll() {
         ArrayList<Host> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             reader.readLine();
@@ -31,7 +31,11 @@ public class HostFileRepository implements HostRepository {
         } catch (IOException ex) {
             //
         }
-        return result.stream().filter(i -> i.getEmail().equalsIgnoreCase(hostId)).findFirst().orElse(null);
+        return result;
+    }
+
+    public Host getHostById(String hostId) {
+        return findAll().stream().filter(i -> i.getEmail().equalsIgnoreCase(hostId)).findFirst().orElse(null);
     }
 
     private Host deserialize(String[] fields) {

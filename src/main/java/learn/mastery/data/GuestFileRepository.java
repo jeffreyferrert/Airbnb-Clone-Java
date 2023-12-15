@@ -8,13 +8,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class GuestFileRepository implements GuestRepository {
-    private String filePath;
+    private final String filePath;
 
     public GuestFileRepository(String filePath) {
         this.filePath = filePath;
     }
 
-    public Guest getGuestById(int guestId) {
+    @Override
+    public ArrayList<Guest> findAll() {
         ArrayList<Guest> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             reader.readLine();
@@ -29,25 +30,15 @@ public class GuestFileRepository implements GuestRepository {
         } catch (IOException ex) {
             //
         }
-        return result.stream().filter(i -> i.getId() == guestId).findFirst().orElse(null);
+        return result;
+    }
+
+    public Guest getGuestById(int guestId) {
+        return findAll().stream().filter(i -> i.getId() == guestId).findFirst().orElse(null);
     }
 
     public Guest getGuestByEmail(String guestEmail) {
-        ArrayList<Guest> result = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            reader.readLine();
-
-            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-
-                String[] fields = line.split(",", -1);
-                if (fields.length == 6) {
-                    result.add(deserialize(fields));
-                }
-            }
-        } catch (IOException ex) {
-            //
-        }
-        return result.stream().filter(i -> i.getEmail().equalsIgnoreCase(guestEmail)).findFirst().orElse(null);
+        return findAll().stream().filter(i -> i.getEmail().equalsIgnoreCase(guestEmail)).findFirst().orElse(null);
     }
 
     private Guest deserialize(String[] fields) {

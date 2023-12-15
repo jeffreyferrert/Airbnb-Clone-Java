@@ -4,11 +4,17 @@ import learn.mastery.data.DataException;
 import learn.mastery.data.GuestRepository;
 import learn.mastery.models.Guest;
 
+import java.util.ArrayList;
+
 public class GuestService {
-    private GuestRepository guestRepository;
+    private final GuestRepository guestRepository;
 
     public GuestService(GuestRepository repository) {
         this.guestRepository = repository;
+    }
+
+    public ArrayList<Guest> findAll() {
+        return guestRepository.findAll();
     }
 
     public Guest getGuestById(int id) throws DataException {

@@ -15,6 +15,12 @@ class GuestFileRepositoryTest {
     GuestFileRepository repository = new GuestFileRepository(PATH);
 
     @Test
+    void shouldFindAll() {
+        List<Guest> all = repository.findAll();
+        assertEquals(1000, all.size());
+    }
+
+    @Test
     void shouldGetGuestById() {
         Guest actual = repository.getGuestById(1);
         assertEquals(actual.getEmail(),"slomas0@mediafire.com");

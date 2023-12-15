@@ -27,10 +27,7 @@
 
     <bean id="reservationService" class="learn.mastery.domain.ReservationService">
         <constructor-arg ref="reservationRepository"/>
-        <constructor-arg ref="guestRepository"/>
-        <constructor-arg ref="hostRepository"/>
     </bean>
-
 
     <bean id="io" class="learn.mastery.ui.ConsoleIO"/>
     <bean id="view" class="learn.mastery.ui.View">

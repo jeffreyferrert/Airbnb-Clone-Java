@@ -13,8 +13,13 @@ class GuestServiceTest {
     GuestService service = new GuestService(repository);
 
     @Test
+    void shouldFindAll() throws DataException {
+        assertEquals(2, service.findAll().size());
+    }
+
+    @Test
     void shouldGetGuestById() throws DataException {
-        Guest actual = service.getGuestById(0);
+        Guest actual = service.getGuestById(1);
         assertNotNull(actual);
         assertEquals(actual.getFirstName(), "Sullivan");
         assertEquals(actual.getLastName(), "Lomas");
@@ -30,7 +35,7 @@ class GuestServiceTest {
     void shouldGetGuestByEmail() throws DataException {
         Guest actual = service.getGuestByEmail("slomas0@mediafire.com");
         assertNotNull(actual);
-        assertEquals(0, actual.getId());
+        assertEquals(1, actual.getId());
         assertEquals("Sullivan", actual.getFirstName());
         assertEquals("Lomas", actual.getLastName());
 

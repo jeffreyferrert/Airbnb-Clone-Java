@@ -24,6 +24,24 @@ public class HostRepositoryDouble implements HostRepository {
         host.setStandardRate(BigDecimal.valueOf(340));
         host.setWeekendRate(BigDecimal.valueOf(425));
         hosts.add(host);
+
+        host = new Host();
+        host.setId("a0d911e7-4fde-4e4a-bdb7-f047f15615e8");
+        host.setLastName("Rhodes");
+        host.setEmail("krhodes1@posterous.com");
+        host.setPhone("(478) 7475991");
+        host.setAddress("7262 Morning Avenue");
+        host.setCity("Macon");
+        host.setState("GA");
+        host.setZip(31296);
+        host.setStandardRate(BigDecimal.valueOf(295));
+        host.setWeekendRate(BigDecimal.valueOf(368));
+        hosts.add(host);
+    }
+
+    @Override
+    public ArrayList<Host> findAll() {
+        return hosts;
     }
 
     @Override

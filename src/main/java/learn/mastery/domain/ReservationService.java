@@ -12,13 +12,9 @@ import java.util.List;
 
 public class ReservationService {
     private ReservationRepository reservationRepository;
-    private GuestRepository guestRepository;
-    private HostRepository hostRepository;
 
-    public ReservationService(ReservationRepository reservationRepository, GuestRepository guestRepository, HostRepository hostRepository) {
+    public ReservationService(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
-        this.guestRepository = guestRepository;
-        this.hostRepository = hostRepository;
     }
 
 
@@ -60,6 +56,9 @@ public class ReservationService {
 
     private Result<Reservation> validate(Reservation reservation) throws DataException {
         Result<Reservation> result = new Result<>();
+        if (reservation == null || reservation.getHost() == null || reservation.getGuest() == null) {
+            result.addErrorMessage("Reservation, Host and Guest cannot be null");
+        }
         if (reservation.getStart() == null || reservation.getStart().isBefore(LocalDate.now())) {
             result.addErrorMessage("Start date is required and must be in the future.");
         }

@@ -11,13 +11,27 @@ public class GuestRepositoryDouble implements GuestRepository {
 
     public GuestRepositoryDouble() {
         Guest guest = new Guest();
-        guest.setId(0);
+        guest.setId(1);
         guest.setFirstName("Sullivan");
         guest.setLastName("Lomas");
         guest.setEmail("slomas0@mediafire.com");
         guest.setPhone("(702) 7768761");
         guest.setState("NV");
         guests.add(guest);
+
+        guest = new Guest();
+        guest.setId(2);
+        guest.setFirstName("Olympie");
+        guest.setLastName("Gecks");
+        guest.setEmail("ogecks1@dagondesign.com");
+        guest.setPhone("(202) 2528316");
+        guest.setState("DC");
+        guests.add(guest);
+    }
+
+    @Override
+    public ArrayList<Guest> findAll() {
+        return guests;
     }
 
     @Override

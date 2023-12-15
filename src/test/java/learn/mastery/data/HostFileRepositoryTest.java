@@ -11,6 +11,12 @@ class HostFileRepositoryTest {
     static final String PATH = "./data/hosts.csv";
 
     HostFileRepository repository = new HostFileRepository(PATH);
+
+    @Test
+    void findAll() {
+        assertEquals(1000, repository.findAll().size());
+    }
+
     @Test
     void getHostById() {
         Host actual = repository.getHostById("eyearnes0@sfgate.com");

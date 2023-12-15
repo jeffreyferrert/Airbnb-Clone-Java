@@ -16,7 +16,12 @@ class HostServiceTest {
     HostService service = new HostService(repository);
 
     @Test
-    void getHostById() throws DataException {
+    void shouldFindAll() throws DataException {
+        assertEquals(2, service.findAll().size());
+    }
+
+    @Test
+    void shouldGetHostById() throws DataException {
         Host actual = service.getHostById("3edda6bc-ab95-49a8-8962-d50b53f84b15");
         assertNotNull(actual);
         assertEquals("Yearnes", actual.getLastName());

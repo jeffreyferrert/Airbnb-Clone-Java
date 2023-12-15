@@ -18,83 +18,73 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReservationFileRepositoryTest {
-    static final String PATH = "./data/reservations_test";
-    static final String PATH_TEST = "./data/reservations_test2";
+    static final String SEED_FILE_PATH = "./data/2e72f86c-b8fe-4265-b4f1-304dea8762db.csv";
+    static final String TEST_FILE_PATH = "./data/reservations_test/2e72f86c-b8fe-4265-b4f1-304dea8762db.csv";
+    static final String TEST_DIR_PATH = "./data/reservations_test";
+    private GuestRepository guestRepository = new GuestFileRepository("./data/guests.csv");
 
-    ReservationFileRepository repository = new ReservationFileRepository(PATH_TEST);
-    private GuestRepository guestRepository = new GuestFileRepository("./data/hosts.csv");
+    Host host = new Host("2e72f86c-b8fe-4265-b4f1-304dea8762db", "Jeff", "Yearnes", "eyearnes0@sfgate.com", "(806) 1783815", "3 Nova Trail", "Amarillo", "TX", 79182, BigDecimal.valueOf(340), BigDecimal.valueOf(425));
+    Guest guest = new Guest(1, "Sullivan", "Lomas", "slomas0@mediafire.com", "(702) 7768761", "NV");
+
+    ReservationFileRepository repository = new ReservationFileRepository(TEST_DIR_PATH);
 
     @BeforeEach
     public void setUp() throws IOException {
-        Path seedPath = Paths.get(PATH);
-        Path testPath = Paths.get(PATH_TEST);
-
-        Files.copy(seedPath, testPath, StandardCopyOption.REPLACE_EXISTING);
         repository.setGuestRepository(guestRepository);
-    }
 
+        Path seedPath = Paths.get(SEED_FILE_PATH);
+        Path testPath = Paths.get(TEST_FILE_PATH);
+        Files.copy(seedPath, testPath, StandardCopyOption.REPLACE_EXISTING);
+    }
 
     @Test
     void shouldFindByHost() throws DataException {
-        Host host = new Host();
-        host.setId("2e72f86c-b8fe-4265-b4f1-304dea8762db");
-        host.setLastName("Yearnes");
-        host.setEmail("eyearnes0@sfgate.com");
-        host.setPhone("(806) 1783815");
-        host.setAddress("3 Nova Trail");
-        host.setCity("Amarillo");
-        host.setState("TX");
-        host.setZip(79182);
-        host.setStandardRate(BigDecimal.valueOf(340));
-        host.setWeekendRate(BigDecimal.valueOf(425));
-
         List<Reservation> all = repository.findByHost(host);
-        System.out.println(all);
-        System.out.println(all.get(0));
-        assertEquals(870, all.get(0).getTotal());
+        assertEquals(1, all.get(0).getId());
+        assertEquals(BigDecimal.valueOf(500), all.get(0).getTotal());
     }
 
     @Test
     void shouldAdd() throws DataException {
-        Host host = new Host();
-        host.setId("2e72f86c-b8fe-4265-b4f1-304dea8762db");
-        host.setLastName("Yearnes");
-        host.setEmail("eyearnes0@sfgate.com");
-        host.setPhone("(806) 1783815");
-        host.setAddress("3 Nova Trail");
-        host.setCity("Amarillo");
-        host.setState("TX");
-        host.setZip(79182);
-        host.setStandardRate(BigDecimal.valueOf(340));
-        host.setWeekendRate(BigDecimal.valueOf(425));
-
-        Guest guest = new Guest();
-        guest.setId(0);
-        guest.setFirstName("Sullivan");
-        guest.setLastName("Lomas");
-        guest.setEmail("slomas0@mediafire.com");
-        guest.setPhone("(702) 7768761");
-        guest.setState("NV");
-
         Reservation reservation = new Reservation();
         reservation.setHost(host);
         reservation.setGuest(guest);
-        reservation.setStart( LocalDate.of(2023,12,10));
-        reservation.setEnd( LocalDate.of(2023,12,30));
-        reservation.setTotal(BigDecimal.valueOf(1000));
-
+        reservation.setStart(LocalDate.of(2023, 12, 10));
+        reservation.setEnd(LocalDate.of(2023, 12, 30));
+        reservation.setTotal(BigDecimal.valueOf(500));
         reservation = repository.add(reservation);
+
+        List<Reservation> all = repository.findByHost(host);
+        assertEquals(2, all.size());
         assertEquals(2, reservation.getId());
     }
 
     @Test
-    void shouldUpdate() {
+    void shouldUpdate() throws DataException {
+        Reservation reservation = new Reservation();
+        reservation.setHost(host);
+        reservation.setGuest(guest);
+        reservation.setStart(LocalDate.of(2023, 12, 10));
+        reservation.setEnd(LocalDate.of(2023, 12, 30));
+        reservation.setTotal(BigDecimal.valueOf(500));
+        reservation = repository.add(reservation);
 
+        List<Reservation> all = repository.findByHost(host);
+        reservation = all.get(0);
+        reservation.setGuest(guest);
+        reservation.setHost(host);
+        reservation.setStart(LocalDate.of(2023, 12, 15));
+        reservation.setEnd(LocalDate.of(2023, 12, 20));
+
+        boolean result = repository.update(reservation);
+        assertTrue(result);
     }
 
     @Test
-    void shouldDelete() {
-//        boolean result = repository.delete();
-//        assertTrue(result);
+    void shouldDelete() throws DataException {
+        List<Reservation> all = repository.findByHost(host);
+        Reservation reservation = all.get(0);
+        boolean result = repository.delete(reservation);
+        assertTrue(result);
     }
 }
